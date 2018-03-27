@@ -22,11 +22,10 @@ def lambda_handler(event, context):
         msg = email.message_from_bytes(obj.get()["Body"].read())
         
         # quit if there is no attachments
-        if len(msg.get_payload()) < 2:
+        attachments = msg.get_payload()
+        if len(attachments) < 2:
             print("we've got no attachment")
             return None
-        
-        attachments = msg.get_payload()
         
         # delete the first item, it will be the mail itself
         del attachments[0]
