@@ -3,7 +3,7 @@ import boto3
 
 s3 = boto3.client('s3')
 s3r = boto3.resource('s3')
-temp_dict = "/tmp/"
+temp_dir = "/tmp/"
 output_prefix = "output/"
 
 def lambda_handler(event, context):
@@ -36,12 +36,12 @@ def lambda_handler(event, context):
             content_type = attachment.get('Content-Disposition')
             file_name = content_type.split("=")[1].replace('\"', '')
             print("attachment is {}".format(file_name))
-            # download to temp dict with the same filename
-            with open(temp_dict + file_name, 'wb') as writefile:
+            # download to temp dir with the same filename
+            with open(temp_dir + file_name, 'wb') as writefile:
                 writefile.write(attachment.get_payload(decode=True))
             
             # now upload to the right prefix + mail
-            with open(temp_dict + file_name, 'rb')as data:
+            with open(temp_dir + file_name, 'rb')as data:
                 s3.upload_fileobj(data, bucket, output_prefix+file_name)
             
         
